@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F7FA"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="16dp"
+        android:src="@android:drawable/ic_menu_compass"
+        app:tint="#0A58CA" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="GrowSureTech"
+        android:textColor="#0A58CA"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:text="Select Role to View Dashboard"
+        android:textColor="#666666"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/btnRouteParent"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#1565C0"
+        android:text="Login as Parent"
+        android:textSize="16sp"
+        app:cornerRadius="12dp" />
+
+    <Button
+        android:id="@+id/btnRouteTeacher"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#4CAF50"
+        android:text="Login as Anganwadi Worker"
+        android:textSize="16sp"
+        app:cornerRadius="12dp" />
+
+    <Button
+        android:id="@+id/btnRouteAdmin"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:backgroundTint="#333333"
+        android:text="Login as District Admin"
+        android:textSize="16sp"
+        app:cornerRadius="12dp" />
+
+</LinearLayout>
