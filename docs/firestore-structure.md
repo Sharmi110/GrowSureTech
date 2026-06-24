@@ -21,7 +21,7 @@ growthRecords
  └─ childId
  └─ height
  └─ weight
- └─ bmi
+ └─ confidenceScore
  └─ status
  └─ date
 
