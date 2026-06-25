@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F3F8FF"
+    android:padding="20dp"
+    android:gravity="center">
+
+    ```
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GrowSureTech"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        android:textColor="#1565F9"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Child Type"
+        android:textSize="20sp"
+        android:textColor="#666666"
+        android:layout_marginTop="10dp"/>
+
+    <Button
+        android:id="@+id/btnExisting"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:text="Existing Child"
+        android:textSize="18sp"
+        android:layout_marginTop="50dp"
+        android:backgroundTint="#1565F9"/>
+
+    <Button
+        android:id="@+id/btnNew"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:text="New Child"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="#0D47A1"/>
+    ```
+
+</LinearLayout>

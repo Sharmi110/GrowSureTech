@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F7FA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <!-- GrowSureTech Title -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GrowSureTech"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="#1565F9"
+            android:layout_gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Student Verification System"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:layout_gravity="center"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter details and capture student image"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp" />
+
+        <!-- Student Details -->
+
+        <EditText
+            android:id="@+id/etStudentId"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:hint="Student ID"
+            android:layout_marginTop="24dp" />
+
+        <EditText
+            android:id="@+id/etClass"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:hint="Standard / Class"
+            android:layout_marginTop="12dp" />
+
+        <!-- Photo Section -->
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Student Photo"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#1565F9"
+            android:layout_marginTop="24dp" />
+
+        <ImageView
+            android:id="@+id/imgPreview"
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:layout_marginTop="12dp"
+            android:background="#E3F2FD"
+            android:scaleType="centerCrop"
+            android:src="@android:drawable/ic_menu_camera" />
+
+        <!-- Buttons -->
+
+        <Button
+            android:id="@+id/btnCapture"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="📸 Capture Photo"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#1565F9" />
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="Submit Details"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#4CAF50" />
+
+    </LinearLayout>
+
+</ScrollView>
