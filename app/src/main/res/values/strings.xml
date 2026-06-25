@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">bmi</string>
+    <string-array name="roles">
+        <item>Anganwadi Worker</item>
+        <item>Parent</item>
+        <item>Health Officer</item>
+        <item>System Admin</item>
+    </string-array>
+</resources>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F3F8FF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="#1565F9">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="GrowSureTech"
+                android:textColor="@android:color/white"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Registration Form"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <!-- Form Card -->
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <EditText
+                    android:id="@+id/etChildName"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/edittext_selector"
+                    android:drawableStart="@android:drawable/ic_menu_myplaces"
+                    android:drawablePadding="10dp"
+                    android:hint="Child Name"
+                    android:padding="15dp"
+                    android:textSize="16sp"/>
+
+                <EditText
+                    android:id="@+id/etDob"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/edittext_selector"
+                    android:drawableStart="@android:drawable/ic_menu_my_calendar"
+                    android:drawablePadding="10dp"
+                    android:hint="DOB (DD/MM/YYYY)"
+                    android:padding="15dp"
+                    android:textSize="16sp"/>
+
+                <EditText
+                    android:id="@+id/etGender"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/edittext_selector"
+                    android:drawableStart="@android:drawable/ic_menu_manage"
+                    android:drawablePadding="10dp"
+                    android:hint="Gender"
+                    android:padding="15dp"
+                    android:textSize="16sp"/>
+
+                <EditText
+                    android:id="@+id/etParentName"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/edittext_selector"
+                    android:drawableStart="@android:drawable/ic_menu_myplaces"
+                    android:drawablePadding="10dp"
+                    android:hint="Parent Name"
+                    android:padding="15dp"
+                    android:textSize="16sp"/>
+
+                <EditText
+
+                    android:id="@+id/etParentPhoneNumber"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/edittext_selector"
+                    android:drawableStart="@android:drawable/ic_menu_call"
+                    android:drawablePadding="10dp"
+                    android:hint="Parent Phone Number"
+                    android:inputType="phone"
+                    android:maxLength="10"
+                    android:padding="15dp"
+                    android:textSize="16sp"/>
+
+                <EditText
+                    android:id="@+id/etVillage"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/edittext_selector"
+                    android:drawableStart="@android:drawable/ic_menu_mylocation"
+                    android:drawablePadding="10dp"
+                    android:hint="Village"
+                    android:padding="15dp"
+                    android:textSize="16sp"/>
+
+                <EditText
+                    android:id="@+id/etCenter"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/edittext_selector"
+                    android:drawableStart="@android:drawable/ic_menu_compass"
+                    android:drawablePadding="10dp"
+                    android:hint="Anganwadi Center"
+                    android:padding="15dp"
+                    android:textSize="16sp"/>
+
+                <Button
+                    android:id="@+id/btnRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    android:layout_marginTop="20dp"
+                    android:text="REGISTER"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:backgroundTint="#1565F9"/>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+</ScrollView>
+
