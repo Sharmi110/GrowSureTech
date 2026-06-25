@@ -1,13 +1,13 @@
 # Alert Logic
 
-If nutritionStatus = Normal
+Normal
 → No Alert
 
-If nutritionStatus = Underweight
+Underweight
 → Medium Alert
 
-If nutritionStatus = Severely Underweight
+Overweight
+→ Medium Alert
+
+Obese
 → High Alert
-
-If nutritionStatus = Overweight
-→ Medium Alert

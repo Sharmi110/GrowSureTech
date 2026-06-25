@@ -1,16 +1,6 @@
-# ML Output Contract
-
 {
-  "height": 92.5,
-  "weight": 13.2,
+  "heightCm": 145.6,
+  "weightKg": 29.9,
   "nutritionStatus": "Normal",
-  "confidenceScore": 0.94
+  "confidence": 0.95
 }
-
-Units:
-- Height: cm
-- Weight: kg
-
-Source:
-- MediaPipe Pose
-- Android Local Processing
