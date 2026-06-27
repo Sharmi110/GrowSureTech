@@ -7,6 +7,6 @@ Workers:
 Parents:
 - Read own child data
 
-Admin:
+District officer:
 - Read all
 - Write all
