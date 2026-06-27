@@ -1,13 +1,19 @@
 Worker Login
-↓
+      ↓
 Register Child
-↓
-Capture Image
-↓
-ML Predict Height & Weight
-↓
+      ↓
+Save Child Details
+      ↓
+Capture Child Image
+      ↓
+AI Module
+      ↓
+Height + Weight + BMI + Nutrition Status
+      ↓
 Save Growth Record
-↓
-Dashboard Display
-↓
-Alert Generation
+      ↓
+Generate Alert (if needed)
+      ↓
+Dashboard
+      ↓
+Parent / District Officer View Results
