@@ -5,10 +5,12 @@
 ```
 users
  └─ userId
+ └─ username
+ └─ password
  └─ name
- └─ email
- └─ role (parent / worker / districtOfficer)
+ └─ role
  └─ region
+ └─ anganwadiCenter
  └─ createdAt
 ```
 
@@ -55,6 +57,26 @@ alerts
  └─ isResolved
  └─ createdAt
 ```
+## Counters Collection
+
+Used for generating unique Child IDs.
+
+counters
+ └─ childCounter
+      └─ lastNumber
+
+Example:
+
+{
+  "lastNumber": 0
+}
+
+Generated Child IDs:
+
+GSTC001
+GSTC002
+GSTC003
+...
 
 ## Field Descriptions
 
@@ -93,4 +115,4 @@ Underweight
 Normal
 Overweight
 Obese
-```
+``` 
