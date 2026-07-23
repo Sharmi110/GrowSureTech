@@ -27,13 +27,15 @@ class TeacherDashboardActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // ROUTE 2: View Priya's Profile
+        // ROUTE 2: View Priya's Profile (Left as Toast for now)
         btnViewPriya.setOnClickListener {
             Toast.makeText(this, "Opening Priya's Profile...", Toast.LENGTH_SHORT).show()
         }
 
+        // UPDATED: Now actually opens the Camera screen instead of showing a popup!
         btnRecordMeasurement.setOnClickListener {
-            Toast.makeText(this, "Opening Camera to scan student...", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, CaptureActivity::class.java)
+            startActivity(intent)
         }
 
         // Setup Bottom Navigation
@@ -42,10 +44,24 @@ class TeacherDashboardActivity : AppCompatActivity() {
 
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_home -> { Toast.makeText(this, "Navigating to Home...", Toast.LENGTH_SHORT).show(); true }
-                R.id.nav_capture -> { Toast.makeText(this, "Opening Camera...", Toast.LENGTH_SHORT).show(); true }
+                R.id.nav_home -> {
+                    // UPDATED: Routes back to Role Selection
+                    val intent = Intent(this, RoleActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP // Clears the backstack so you don't pile up screens
+                    startActivity(intent)
+                    true
+                }
+                R.id.nav_capture -> {
+                    // UPDATED: Opens Camera from the Nav Bar
+                    val intent = Intent(this, CaptureActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
                 R.id.nav_dashboard -> true
-                R.id.nav_profile -> { Toast.makeText(this, "Opening Profile...", Toast.LENGTH_SHORT).show(); true }
+                R.id.nav_profile -> {
+                    Toast.makeText(this, "Opening Profile...", Toast.LENGTH_SHORT).show()
+                    true
+                }
                 else -> false
             }
         }

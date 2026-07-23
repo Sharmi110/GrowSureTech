@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "720389122423",
+    "project_id": "growsuretech-240606",
+    "storage_bucket": "growsuretech-240606.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:720389122423:android:6594bf5ce3de09daf8d972",
+        "android_client_info": {
+          "package_name": "com.example.bmi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlSLGuDFvON4NwIY9IoBNGU5I-eIzJtRs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:720389122423:android:bf58264709043307f8d972",
+        "android_client_info": {
+          "package_name": "com.example.growsuretech"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlSLGuDFvON4NwIY9IoBNGU5I-eIzJtRs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
