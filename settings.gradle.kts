@@ -24,4 +24,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "GrowSureTech"
+
 include(":app")
+include(":opencv")

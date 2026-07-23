@@ -56,4 +56,6 @@ dependencies {
 
     // Coroutines (For background tasks)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation(project(":opencv"))
+    implementation("com.google.mediapipe:tasks-vision:0.10.14")
 }
