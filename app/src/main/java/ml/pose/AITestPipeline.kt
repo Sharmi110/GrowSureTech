@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import ml.bmi.BMICalculator
 import ml.nutrition.NutritionClassifier
+import ml.opencv.OpenCVRulerDetector
 import ml.result.AIResult
 import ml.weight.WeightPredictor
 
@@ -15,11 +16,15 @@ class AITestPipeline {
         age: Int
     ): AIResult {
 
-        // Initialize MediaPipe
+        // -------------------------------
+        // STEP 1: Initialize MediaPipe
+        // -------------------------------
         val detector = RealPoseDetector(context)
         detector.initialize()
 
-        // Detect pose from captured image
+        // -------------------------------
+        // STEP 2: Detect body landmarks
+        // -------------------------------
         val landmarks = detector.detectPose(bitmap)
 
         if (landmarks == null) {
@@ -32,40 +37,60 @@ class AITestPipeline {
             )
         }
 
-        // Process landmarks
+        // -------------------------------
+        // STEP 3: Detect reference ruler
+        // -------------------------------
+        val rulerDetector = OpenCVRulerDetector()
+
+        var rulerPixels = rulerDetector.detectRuler(bitmap)
+        android.util.Log.d("RULER_TEST", "Detected ruler pixels = $rulerPixels")
+
+        // Safety fallback
+        if (rulerPixels <= 0f) {
+            rulerPixels = 180f
+        }
+
+        // -------------------------------
+        // STEP 4: Estimate height
+        // -------------------------------
         val processor = PoseProcessor()
 
         val poseResult = processor.processLandmarks(
-            landmarks
+            landmarkData = landmarks,
+            rulerPixels = rulerPixels
         )
+        android.util.Log.d("HEIGHT_TEST", "Body pixels = ${poseResult.bodyPixels}")
+        android.util.Log.d("HEIGHT_TEST", "Estimated height = ${poseResult.estimatedHeightCm}")
 
         val height = poseResult.estimatedHeightCm
 
-        // Predict weight using REAL age
+        // -------------------------------
+        // STEP 5: Predict weight
+        // -------------------------------
         val weight = WeightPredictor().predictWeight(
-            height,
-            age
+            heightCm = height,
+            ageYears = age
         )
 
-        // Calculate BMI
+        // -------------------------------
+        // STEP 6: Calculate BMI
+        // -------------------------------
         val bmi = BMICalculator().calculate(
             height,
             weight
         )
 
-        // Nutrition Classification
-        val nutrition = NutritionClassifier().classify(
-            bmi
-        )
-
-        val confidence = poseResult.confidence
+        // -------------------------------
+        // STEP 7: Nutrition classification
+        // -------------------------------
+        val nutrition = NutritionClassifier().classify(bmi)
 
         return AIResult(
             heightCm = height,
             weightKg = weight,
             bmi = bmi,
             nutritionStatus = nutrition,
-            confidence = confidence
+            confidence = poseResult.confidence
         )
     }
 }

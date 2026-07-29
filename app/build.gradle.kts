@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.ksp)
     id("com.google.gms.google-services")
 }
-
 android {
     namespace = "com.example.growsuretech"
     compileSdk {
@@ -48,11 +48,9 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.15.0"))
     implementation("com.google.firebase:firebase-firestore")
     // Room (Offline Database)
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    annotationProcessor("androidx.room:room-compiler:2.6.1")
-    // If using Kotlin Symbol Processing (KSP) or KAPT, you might need:
-    // kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-runtime:2.7.2")
+    implementation("androidx.room:room-ktx:2.7.2")
+    ksp("androidx.room:room-compiler:2.7.2")
 
     // Coroutines (For background tasks)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")

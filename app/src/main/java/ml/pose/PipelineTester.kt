@@ -17,8 +17,12 @@ class PipelineTester {
 
         val processor = PoseProcessor()
 
+        // Dummy ruler length for testing
+        val rulerPixels = 180f
+
         val result = processor.processLandmarks(
-            landmarkData
+            landmarkData,
+            rulerPixels
         )
 
         println("Body Pixels = ${result.bodyPixels}")
