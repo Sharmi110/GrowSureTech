@@ -1,143 +1,163 @@
-package com.example.growsuretech // IMPORTANT: Keep your exact package name here!
+package com.example.growsuretech
 
+import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.firestore.FirebaseFirestore
+import org.json.JSONObject
 import java.util.Locale
 
 class DashboardActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
 
-    private lateinit var tts: TextToSpeech
-    private var speechText = ""
+    private lateinit var db: FirebaseFirestore
+
+    // 1. DECLARE UI ELEMENTS
+    private lateinit var tvParentHeight: TextView
+    private lateinit var tvParentWeight: TextView
+    private lateinit var tvParentBMI: TextView
+    private lateinit var tvStatusTitle: TextView
+    private lateinit var tvStatusDesc: TextView
+
+    private lateinit var btnVoiceAlert: Button
+    private lateinit var btnViewAnalytics: Button
+
+    private var currentChildId: String = ""
+
+    // 🚀 NEW: Text-to-Speech Engine
+    private var tts: TextToSpeech? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Hide the default Action Bar and tint the Status Bar
-        supportActionBar?.hide()
-        window.statusBarColor = Color.parseColor("#0A58CA")
-
         setContentView(R.layout.activity_dashboard)
 
-        // Initialize TextToSpeech Engine
+        db = FirebaseFirestore.getInstance()
+
+        // Initialize the Text-to-Speech engine
         tts = TextToSpeech(this, this)
 
-        // Link logic to the XML layout components
-        val tvHeight = findViewById<TextView>(R.id.tvParentHeight)
-        val tvWeight = findViewById<TextView>(R.id.tvParentWeight)
-        val tvBmi = findViewById<TextView>(R.id.tvParentBMI)
-        val tvStatusTitle = findViewById<TextView>(R.id.tvStatusTitle)
-        val tvStatusDesc = findViewById<TextView>(R.id.tvStatusDesc)
-        val cardStatus = findViewById<CardView>(R.id.cardStatusBackground)
-        val btnViewAnalytics = findViewById<Button>(R.id.btnViewAnalytics)
-        val btnVoiceAlert = findViewById<Button>(R.id.btnVoiceAlert)
+        // 2. CONNECT TO XML IDs
+        tvParentHeight = findViewById(R.id.tvParentHeight)
+        tvParentWeight = findViewById(R.id.tvParentWeight)
+        tvParentBMI = findViewById(R.id.tvParentBMI)
+        tvStatusTitle = findViewById(R.id.tvStatusTitle)
+        tvStatusDesc = findViewById(R.id.tvStatusDesc)
 
-        val tvBadgeStatusIcon = findViewById<TextView>(R.id.tvBadgeStatusIcon)
-        val tvBadgeStatusText = findViewById<TextView>(R.id.tvBadgeStatusText)
+        btnVoiceAlert = findViewById(R.id.btnVoiceAlert)
+        btnViewAnalytics = findViewById(R.id.btnViewAnalytics)
 
-        // Setup Parameter Variables
-        val currentWeightKg = 28.0
-        val currentHeightCm = 125.0
+        // 3. CHECK FOR PASSED DATA
+        val passedId = intent.getStringExtra("CHILD_ID")
 
-        // Execute the WHO Classification Math Engine
-        val healthResult = HealthCalculator.calculateHealthStatus(currentWeightKg, currentHeightCm)
-
-        // Render Calculated Metrics
-        tvHeight.text = "${currentHeightCm} cm"
-        tvWeight.text = "${currentWeightKg} kg"
-        tvBmi.text = "${healthResult.bmi}"
-
-        // Execute Reactive UI Updates Based on Classification
-        when (healthResult.status) {
-            "Normal" -> {
-                tvStatusTitle.text = "Overall Health Status: Good"
-                tvStatusTitle.setTextColor(Color.parseColor("#2E7D32"))
-                speechText = "Great job! Your child is growing well. Keep maintaining a balanced diet."
-                tvStatusDesc.text = speechText
-                tvStatusDesc.setTextColor(Color.parseColor("#1B5E20"))
-                cardStatus.setCardBackgroundColor(Color.parseColor("#E8F5E9"))
-
-                tvBadgeStatusIcon.text = "🏆"
-                tvBadgeStatusText.text = "Ideal Growth"
-            }
-            "Underweight", "Severely Underweight" -> {
-                tvStatusTitle.text = "Overall Health Status: ${healthResult.status}"
-                tvStatusTitle.setTextColor(Color.parseColor("#C62828"))
-                speechText = "Attention needed. Your child's classification tracking shows ${healthResult.status}. Please consult with an Anganwadi worker for a nutrition plan."
-                tvStatusDesc.text = speechText
-                tvStatusDesc.setTextColor(Color.parseColor("#B71C1C"))
-                cardStatus.setCardBackgroundColor(Color.parseColor("#FFEBEE"))
-
-                tvBadgeStatusIcon.text = "💪"
-                tvBadgeStatusText.text = "Growing Stronger"
-            }
-            "Overweight", "Obese" -> {
-                tvStatusTitle.text = "Overall Health Status: ${healthResult.status}"
-                tvStatusTitle.setTextColor(Color.parseColor("#EF6C00"))
-                speechText = "Attention needed. Your child's classification tracking shows ${healthResult.status}. Monitor diet, encourage more physical activity, and reduce sugar intake."
-                tvStatusDesc.text = speechText
-                tvStatusDesc.setTextColor(Color.parseColor("#E65100"))
-                cardStatus.setCardBackgroundColor(Color.parseColor("#FFF3E0"))
-
-                tvBadgeStatusIcon.text = "🏃"
-                tvBadgeStatusText.text = "Active Tracker"
-            }
+        if (passedId != null) {
+            currentChildId = passedId
+            fetchMeasurements(currentChildId)
+        } else {
+            val sharedPref = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+            val loggedInUsername = sharedPref.getString("username", "UNKNOWN_USER")
+            Toast.makeText(this, "Welcome, $loggedInUsername", Toast.LENGTH_SHORT).show()
         }
 
-        // Button Click Event Listeners
+        // 4. MAKE BUTTONS FUNCTIONAL
+
+        // 🚀 THE FIX: Trigger the voice engine when clicked
         btnVoiceAlert.setOnClickListener {
-            tts.speak(speechText, TextToSpeech.QUEUE_FLUSH, null, "")
-            Toast.makeText(this, "Playing Audio...", Toast.LENGTH_SHORT).show()
+            speakOutHealthStatus()
         }
 
-        // ROUTES TO THE NEW ANALYTICS SCREEN
         btnViewAnalytics.setOnClickListener {
-            val intent = Intent(this, ParentAnalyticsActivity::class.java)
-            startActivity(intent)
-        }
-
-        // Configure Bottom Navigation
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-        bottomNavigationView.selectedItemId = R.id.nav_dashboard
-
-        bottomNavigationView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_home -> {
-                    Toast.makeText(this, "Navigating to Home...", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                R.id.nav_capture -> {
-                    Toast.makeText(this, "Opening Camera...", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                R.id.nav_dashboard -> true
-                R.id.nav_profile -> {
-                    Toast.makeText(this, "Opening Profile...", Toast.LENGTH_SHORT).show()
-                    true
-                }
-                else -> false
+            if (currentChildId.isNotEmpty()) {
+                val intent = Intent(this, ParentAnalyticsActivity::class.java)
+                intent.putExtra("CHILD_ID", currentChildId)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Child ID is missing, cannot load chart.", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
+    // 5. TEXT-TO-SPEECH SETUP
     override fun onInit(status: Int) {
         if (status == TextToSpeech.SUCCESS) {
-            tts.language = Locale.ENGLISH
+            // Set language to US English (or default locale)
+            val result = tts?.setLanguage(Locale.US)
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "Language specified is not supported!")
+                Toast.makeText(this, "Voice language not supported on this device.", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Log.e("TTS", "Initialization Failed!")
         }
     }
 
+    private fun speakOutHealthStatus() {
+        // Grab the exact text currently showing on the screen
+        val titleText = tvStatusTitle.text.toString()
+        val descText = tvStatusDesc.text.toString()
+
+        // Combine them into one natural sentence
+        val textToRead = "$titleText. $descText"
+
+        // Tell the engine to speak and flush any previous speech queue
+        tts?.speak(textToRead, TextToSpeech.QUEUE_FLUSH, null, "")
+        Toast.makeText(this, "🔊 Playing Audio...", Toast.LENGTH_SHORT).show()
+    }
+
+    // Shut down TTS when the app page closes to save battery/memory
     override fun onDestroy() {
-        if (::tts.isInitialized) {
-            tts.stop()
-            tts.shutdown()
+        if (tts != null) {
+            tts?.stop()
+            tts?.shutdown()
         }
         super.onDestroy()
+    }
+
+    // 6. FETCH AND PARSE ML JSON DATA
+    private fun fetchMeasurements(childId: String) {
+        db.collection("measurements")
+            .whereEqualTo("childId", childId)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val document = documents.documents[0]
+                    val mlDataJsonString = document.getString("mlData")
+
+                    if (mlDataJsonString != null) {
+                        try {
+                            val jsonObject = JSONObject(mlDataJsonString)
+                            val height = jsonObject.getDouble("heightCm")
+                            val weight = jsonObject.getDouble("weightKg")
+                            val bmi = jsonObject.getDouble("bmi")
+                            val nutritionStatus = jsonObject.getString("nutritionStatus")
+
+                            tvParentHeight.text = "$height cm"
+                            tvParentWeight.text = "$weight kg"
+                            tvParentBMI.text = bmi.toString()
+
+                            tvStatusTitle.text = "Overall Health Status: $nutritionStatus"
+
+                            if (nutritionStatus.equals("Normal", ignoreCase = true)) {
+                                tvStatusDesc.text = "Great job! Your child is growing well. Keep maintaining a balanced diet and regular physical activity."
+                            } else {
+                                tvStatusDesc.text = "We noticed some irregularities in the growth curve. Please consult with your Anganwadi worker."
+                            }
+
+                        } catch (e: Exception) {
+                            Log.e("Dashboard", "Error parsing ML JSON: ${e.message}")
+                        }
+                    }
+                } else {
+                    Toast.makeText(this, "No health measurements found yet.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to load health data.", Toast.LENGTH_SHORT).show()
+            }
     }
 }

@@ -48,30 +48,71 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            // Retrieve the worker's region
+            val sharedPref = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
+            val workerRegion = sharedPref.getString("workerRegion", "Trichy")
+
             Toast.makeText(this, "Generating ID and Saving...", Toast.LENGTH_SHORT).show()
 
-            // 1. Read the counter to get the next ID number
-            val counterRef = db.collection("counters").document("childCounter")
+            // ---------------------------------------------------------
+            // 🌐 NETWORK CHECK: ROUTE BASED ON CONNECTION
+            // ---------------------------------------------------------
+            if (NetworkUtils.isOnline(this)) {
 
-            counterRef.get().addOnSuccessListener { counterDoc ->
-                var lastNumber = 0L
-                if (counterDoc.exists()) {
-                    lastNumber = counterDoc.getLong("lastNumber") ?: 0L
+                // --- ONLINE MODE ---
+                // Wait for Firebase to read the counter and generate GSTC00X
+                val counterRef = db.collection("counters").document("childCounter")
+
+                counterRef.get().addOnSuccessListener { counterDoc ->
+                    var lastNumber = 0L
+                    if (counterDoc.exists()) {
+                        lastNumber = counterDoc.getLong("lastNumber") ?: 0L
+                    }
+
+                    lastNumber++
+                    val childId = String.format("GSTC%03d", lastNumber)
+
+                    val child = hashMapOf(
+                        "childId" to childId,
+                        "childName" to childName,
+                        "dob" to dob,
+                        "gender" to gender,
+                        "parentName" to parentName,
+                        "parentPhone" to parentPhoneNumber,
+                        "village" to village,
+                        "anganwadiCenter" to center,
+                        "region" to workerRegion
+                    )
+
+                    db.collection("children").document(childId).set(child)
+                        .addOnSuccessListener {
+                            counterRef.update("lastNumber", lastNumber).addOnSuccessListener {
+                                Toast.makeText(this, "Success! Child ID: $childId", Toast.LENGTH_LONG).show()
+
+                                val intent = Intent(this@RegisterActivity, CaptureActivity::class.java)
+                                intent.putExtra("CHILD_ID", childId)
+                                intent.putExtra("CHILD_DOB", dob)
+                                intent.putExtra("CHILD_GENDER", gender)
+                                startActivity(intent)
+                                finish()
+                            }
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Failed to save child: ${e.message}", Toast.LENGTH_LONG).show()
+                        }
+                }.addOnFailureListener { e ->
+                    Toast.makeText(this, "Failed to connect to counter: ${e.message}", Toast.LENGTH_LONG).show()
                 }
 
-                // Increment for the new child
-                lastNumber++
+            } else {
 
-                // Format the ID to look like GSTC001, GSTC002, etc.
-                val childId = String.format("GSTC%03d", lastNumber)
+                // --- OFFLINE MODE ---
+                // Skip the counter read! Generate a short 4-digit PIN so it's easy to remember.
+                val randomPin = (1000..9999).random()
+                val offlineId = "GSTC_$randomPin"
 
-                // Retrieve the worker's region from when they logged in
-                val sharedPref = getSharedPreferences("AppPrefs", Context.MODE_PRIVATE)
-                val workerRegion = sharedPref.getString("workerRegion", "Trichy")
-
-                // 2. Create the Child Object exactly how backend requested
                 val child = hashMapOf(
-                    "childId" to childId,
+                    "childId" to offlineId,
                     "childName" to childName,
                     "dob" to dob,
                     "gender" to gender,
@@ -82,29 +123,18 @@ class RegisterActivity : AppCompatActivity() {
                     "region" to workerRegion
                 )
 
-                // 3. Save the child to the "children" collection using their new ID
-                db.collection("children").document(childId).set(child)
-                    .addOnSuccessListener {
+                // 1. Give data to Firebase (it will safely cache it in the phone's memory automatically)
+                db.collection("children").document(offlineId).set(child)
 
-                        // 4. Update the counter so the next child gets the next number
-                        counterRef.update("lastNumber", lastNumber).addOnSuccessListener {
+                // 2. MOVE IMMEDIATELY! Do not wait for server listeners to trigger!
+                Toast.makeText(this, "Saved Offline! Child ID: $offlineId", Toast.LENGTH_LONG).show()
 
-                            // 5. Success! Open the Camera
-                            Toast.makeText(this, "Success! Child ID: $childId", Toast.LENGTH_LONG).show()
-                            // Pack the ID and DOB into the intent before opening the camera
-                            val intent = Intent(this@RegisterActivity, CaptureActivity::class.java)
-                            intent.putExtra("CHILD_ID", childId)
-                            intent.putExtra("CHILD_DOB", dob)
-                            startActivity(intent)
-                            finish()
-                        }
-                    }
-                    .addOnFailureListener { e ->
-                        Toast.makeText(this, "Failed to save child: ${e.message}", Toast.LENGTH_LONG).show()
-                    }
-
-            }.addOnFailureListener { e ->
-                Toast.makeText(this, "Failed to connect to counter: ${e.message}", Toast.LENGTH_LONG).show()
+                val intent = Intent(this@RegisterActivity, CaptureActivity::class.java)
+                intent.putExtra("CHILD_ID", offlineId)
+                intent.putExtra("CHILD_DOB", dob)
+                intent.putExtra("CHILD_GENDER", gender)
+                startActivity(intent)
+                finish()
             }
         }
     }
