@@ -17,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ml.pose.AITestPipeline
 import ml.utils.AgeCalculator
 
 class CaptureActivity : AppCompatActivity() {
@@ -27,9 +28,8 @@ class CaptureActivity : AppCompatActivity() {
     }
 
     private lateinit var btnCapture: Button
-    private lateinit var btnAnalyze: Button
-    private lateinit var ivPreview: ImageView
-
+    private lateinit var btnSubmit: Button
+    private lateinit var imgPreview: ImageView
     private var capturedBitmap: Bitmap? = null
 
     private lateinit var db: FirebaseFirestore
@@ -49,9 +49,11 @@ class CaptureActivity : AppCompatActivity() {
         childGender = intent.getStringExtra("CHILD_GENDER") ?: ""
 
         btnCapture = findViewById(R.id.btnCapture)
-        btnAnalyze = findViewById(R.id.btnAnalyze)
-        ivPreview = findViewById(R.id.ivPreview)
+        btnSubmit = findViewById(R.id.btnSubmit)
+        imgPreview = findViewById(R.id.imgPreview)
 
+
+        // 2. OPEN CAMERA WITH PERMISSION CHECK
         btnCapture.setOnClickListener {
 
             if (ContextCompat.checkSelfPermission(
@@ -61,7 +63,6 @@ class CaptureActivity : AppCompatActivity() {
             ) {
 
                 openCamera()
-
             } else {
 
                 ActivityCompat.requestPermissions(
@@ -70,25 +71,27 @@ class CaptureActivity : AppCompatActivity() {
                     CAMERA_PERMISSION_CODE
                 )
 
+
             }
         }
 
-        btnAnalyze.setOnClickListener {
 
-            if (capturedBitmap == null) {
 
-                Toast.makeText(
-                    this,
-                    "Please capture a photo first!",
-                    Toast.LENGTH_SHORT
-                ).show()
+        // 3. TRIGGER ML AND SAVE
+            btnSubmit.setOnClickListener {
 
-                return@setOnClickListener
-            }
+                if (capturedBitmap == null) {
+                    Toast.makeText(
+                        this,
+                        "Please capture a photo first!",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-            processWithML(capturedBitmap!!)
-        }
-    }
+                    return@setOnClickListener
+                }
+
+                processWithML(capturedBitmap!!)
+            }}
 
     private fun openCamera() {
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -112,9 +115,7 @@ class CaptureActivity : AppCompatActivity() {
             if (grantResults.isNotEmpty() &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED
             ) {
-
                 openCamera()
-
             } else {
 
                 Toast.makeText(
@@ -136,44 +137,49 @@ class CaptureActivity : AppCompatActivity() {
         if (requestCode == CAMERA_REQUEST_CODE &&
             resultCode == RESULT_OK
         ) {
-
             capturedBitmap = data?.extras?.get("data") as? Bitmap
 
             if (capturedBitmap != null) {
-                ivPreview.setImageBitmap(capturedBitmap)
+                imgPreview.setImageBitmap(capturedBitmap)
+            } else {
+                Toast.makeText(
+                    this,
+                    "Failed to load image from camera. Try again.",
+                    Toast.LENGTH_LONG
+                ).show()
+
             }
         }
     }
 
     private fun processWithML(bitmap: Bitmap) {
 
-        Toast.makeText(
-            this,
-            "Running ML Model...",
-            Toast.LENGTH_SHORT
-        ).show()
+                Toast.makeText(
+                    this,
+                    "Running ML Model...",
+                    Toast.LENGTH_SHORT
+                ).show()
 
-        val age = AgeCalculator.calculateAge(childDob)
+                val age = AgeCalculator.calculateAge(childDob)
 
-        val aiResult = ml.pose.AITestPipeline().runPipeline(
-            this,
-            bitmap,
-            age
-        )
+                val aiResult = AITestPipeline().runPipeline(
+                    this,
+                    bitmap,
+                    age
+                )
 
-        val mlResultJson = """
-        {
-            "heightCm": ${aiResult.heightCm},
-            "weightKg": ${aiResult.weightKg},
-            "nutritionStatus": "${aiResult.nutritionStatus}",
-            "bmi": ${aiResult.bmi},
-            "confidence": ${aiResult.confidence}
-        }
-        """.trimIndent()
-
-        saveData(mlResultJson)
+                val mlResultJson = """
+    {
+        "heightCm": ${aiResult.heightCm},
+        "weightKg": ${aiResult.weightKg},
+        "nutritionStatus": "${aiResult.nutritionStatus}",
+        "bmi": ${aiResult.bmi},
+        "confidence": ${aiResult.confidence}
     }
+    """.trimIndent()
 
+                saveData(mlResultJson)
+            }
     private fun saveData(mlJson: String) {
 
         if (NetworkUtils.isOnline(this)) {
@@ -201,6 +207,14 @@ class CaptureActivity : AppCompatActivity() {
                     Toast.LENGTH_LONG
                 ).show()
 
+                val intent = Intent(this, TeacherDashboardActivity::class.java)
+                intent.putExtra("CHILD_ID", currentChildId)
+                intent.flags =
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+
+                startActivity(intent)
+                finish()
+
             }
             .addOnFailureListener {
 
@@ -209,6 +223,7 @@ class CaptureActivity : AppCompatActivity() {
                     "Saving Offline...",
                     Toast.LENGTH_SHORT
                 ).show()
+
 
                 saveToRoom(mlJson)
             }
@@ -223,6 +238,7 @@ class CaptureActivity : AppCompatActivity() {
 
         CoroutineScope(Dispatchers.IO).launch {
 
+
             val dao = AppDatabase
                 .getDatabase(this@CaptureActivity)
                 .predictionDao()
@@ -236,6 +252,12 @@ class CaptureActivity : AppCompatActivity() {
                     "Saved Offline",
                     Toast.LENGTH_LONG
                 ).show()
+                // 🚀 THE FIX: Navigate even if saved offline
+                val intent = Intent(this@CaptureActivity, TeacherDashboardActivity::class.java)
+                intent.putExtra("CHILD_ID", currentChildId)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+                finish()
             }
         }
     }
