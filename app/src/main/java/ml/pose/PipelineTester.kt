@@ -4,29 +4,37 @@ class PipelineTester {
 
     fun runTest() {
 
+        // Simulated MediaPipe normalized coordinates.
         val landmarkData = LandmarkData(
-            noseX = 250f,
-            noseY = 100f,
+            noseX = 0.50f,
+            noseY = 0.10f,
 
-            leftAnkleX = 230f,
-            leftAnkleY = 800f,
+            leftAnkleX = 0.46f,
+            leftAnkleY = 0.80f,
 
-            rightAnkleX = 270f,
-            rightAnkleY = 810f
+            rightAnkleX = 0.54f,
+            rightAnkleY = 0.81f
         )
 
         val processor = PoseProcessor()
 
-        // Dummy ruler length for testing
-        val rulerPixels = 180f
+        // Test-only values.
+        // In the real app these come from:
+        // rulerPixels -> OpenCV
+        // imageHeightPixels -> bitmap.height
+        val rulerPixels = 500f
+        val imageHeightPixels = 1000
+        val referenceHeightCm = 100f
 
         val result = processor.processLandmarks(
-            landmarkData,
-            rulerPixels
+            landmarkData = landmarkData,
+            rulerPixels = rulerPixels,
+            imageHeightPixels = imageHeightPixels,
+            referenceHeightCm = referenceHeightCm
         )
 
         println("Body Pixels = ${result.bodyPixels}")
-        println("Height = ${result.estimatedHeightCm}")
+        println("Estimated Height = ${result.estimatedHeightCm} cm")
         println("Confidence = ${result.confidence}")
     }
 }

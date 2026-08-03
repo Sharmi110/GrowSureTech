@@ -6,34 +6,48 @@ class PoseProcessor {
 
     fun processLandmarks(
         landmarkData: LandmarkData,
-        rulerPixels: Float
+        rulerPixels: Float,
+        imageHeightPixels: Int,
+        referenceHeightCm: Float
     ): PoseResult {
 
         val estimator = HeightEstimator()
 
-        // Measure body height in pixels
+        // MediaPipe gives normalized Y coordinates (0.0 - 1.0).
+        // Convert the body measurement to actual image pixels.
         val bodyPixels = estimator.calculateBodyPixels(
             noseY = landmarkData.noseY,
             leftAnkleY = landmarkData.leftAnkleY,
-            rightAnkleY = landmarkData.rightAnkleY
+            rightAnkleY = landmarkData.rightAnkleY,
+            imageHeightPixels = imageHeightPixels
         )
 
-        // Our reference ruler is 30 cm
-        val referenceHeightCm = 30f
+        // We cannot estimate height without a valid reference.
+        if (bodyPixels <= 0f || rulerPixels <= 0f || referenceHeightCm <= 0f) {
+            return PoseResult(
+                bodyPixels = bodyPixels,
+                estimatedHeightCm = 0f,
+                confidence = 0f
+            )
+        }
 
-        // Safety check
-        val safeRulerPixels =
-            if (rulerPixels > 0f)
-                rulerPixels
-            else
-                180f
-
-        // Convert body pixels to centimetres
+        // Convert body pixels to centimetres using the physical
+        // reference-strip length.
         val heightCm = estimator.pixelToCm(
             bodyPixels = bodyPixels,
-            referencePixels = safeRulerPixels,
+            referencePixels = rulerPixels,
             referenceHeightCm = referenceHeightCm
         )
+
+        // Prototype sanity check.
+        // Reject clearly impossible measurements.
+        if (heightCm !in 40f..220f) {
+            return PoseResult(
+                bodyPixels = bodyPixels,
+                estimatedHeightCm = 0f,
+                confidence = 0f
+            )
+        }
 
         return PoseResult(
             bodyPixels = bodyPixels,
