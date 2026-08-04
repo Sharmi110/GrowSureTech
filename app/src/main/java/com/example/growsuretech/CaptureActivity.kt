@@ -76,22 +76,24 @@ class CaptureActivity : AppCompatActivity() {
         }
 
 
-
         // 3. TRIGGER ML AND SAVE
-            btnSubmit.setOnClickListener {
+        btnSubmit.setOnClickListener {
 
-                if (capturedBitmap == null) {
-                    Toast.makeText(
-                        this,
-                        "Please capture a photo first!",
-                        Toast.LENGTH_SHORT
-                    ).show()
+            if (capturedBitmap == null) {
+                Toast.makeText(
+                    this,
+                    "Please capture a photo first!",
+                    Toast.LENGTH_SHORT
+                ).show()
 
-                    return@setOnClickListener
-                }
+                return@setOnClickListener
+            }
 
-                processWithML(capturedBitmap!!)
-            }}
+            processWithML(capturedBitmap!!)
+        }
+    }
+
+
 
     private fun openCamera() {
         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -244,7 +246,7 @@ class CaptureActivity : AppCompatActivity() {
                 .predictionDao()
 
             dao.insertPrediction(prediction)
-
+            SyncUtils.schedulePredictionSync(this@CaptureActivity)
             withContext(Dispatchers.Main) {
 
                 Toast.makeText(

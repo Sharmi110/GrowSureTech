@@ -68,4 +68,6 @@ dependencies {
 
     // MediaPipe
     implementation("com.google.mediapipe:tasks-vision:0.10.14")
+
+    implementation("androidx.work:work-runtime-ktx:2.10.3")
 }
