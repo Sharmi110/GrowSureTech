@@ -67,7 +67,9 @@
                     android:drawablePadding="10dp"
                     android:hint="Child Name"
                     android:padding="15dp"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="#808080"/>
 
                 <EditText
                     android:id="@+id/etDob"
@@ -77,9 +79,11 @@
                     android:background="@drawable/edittext_selector"
                     android:drawableStart="@android:drawable/ic_menu_my_calendar"
                     android:drawablePadding="10dp"
-                    android:hint="DOB (DD/MM/YYYY)"
+                    android:hint="DOB (DD-MM-YYYY)"
                     android:padding="15dp"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="#808080"/>
 
                 <EditText
                     android:id="@+id/etGender"
@@ -91,7 +95,9 @@
                     android:drawablePadding="10dp"
                     android:hint="Gender"
                     android:padding="15dp"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="#808080"/>
 
                 <EditText
                     android:id="@+id/etParentName"
@@ -103,7 +109,9 @@
                     android:drawablePadding="10dp"
                     android:hint="Parent Name"
                     android:padding="15dp"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="#808080"/>
 
                 <EditText
 
@@ -119,7 +127,9 @@
                     android:inputType="phone"
                     android:maxLength="10"
                     android:padding="15dp"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="#808080"/>
 
                 <EditText
                     android:id="@+id/etVillage"
@@ -131,7 +141,9 @@
                     android:drawablePadding="10dp"
                     android:hint="Village"
                     android:padding="15dp"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="#808080"/>
 
                 <EditText
                     android:id="@+id/etCenter"
@@ -143,7 +155,9 @@
                     android:drawablePadding="10dp"
                     android:hint="Anganwadi Center"
                     android:padding="15dp"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="#808080"/>
 
                 <Button
                     android:id="@+id/btnRegister"

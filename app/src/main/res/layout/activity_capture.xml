@@ -47,14 +47,18 @@
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:hint="Student ID"
-            android:layout_marginTop="24dp" />
+            android:layout_marginTop="24dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="#808080"/>
 
         <EditText
             android:id="@+id/etClass"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:hint="Standard / Class"
-            android:layout_marginTop="12dp" />
+            android:layout_marginTop="12dp"
+            android:textColor="@android:color/black"
+            android:textColorHint="#808080"/>
 
         <!-- Photo Section -->
 

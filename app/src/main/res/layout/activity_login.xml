@@ -67,7 +67,9 @@
                     android:drawablePadding="10dp"
                     android:hint="Enter Username"
                     android:padding="15dp"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="#808080"/>
 
                 <EditText
                     android:id="@+id/etPassword"
@@ -80,7 +82,9 @@
                     android:hint="Enter Password"
                     android:inputType="textPassword"
                     android:padding="15dp"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="#808080"/>
 
                 <Button
                     android:id="@+id/btnLogin"
